@@ -20,28 +20,17 @@ using namespace std;
 class Solution
 {
 private:
-    bool bfsCheck(int node, vector<int> &vis, vector<int> adj[], int V)
+    bool dfsCheck(int node, vector<int> &vis, vector<int> adj[], int parent)
     {
-        queue<pair<int, int>> q;
-        q.push({node, -1});
+        if (vis[node])
+            return true;
 
-        while (!q.empty())
+        vis[node] = 1;
+        for (auto neighbour : adj[node])
         {
-            int node = q.front().first;
-            int parent = q.front().second;
-            q.pop();
-
-            for (auto neighbour : adj[node])
-            {
-                if (neighbour != parent)
-                    if (vis[neighbour])
-                        return true;
-                    else
-                    {
-                        q.push({neighbour, node});
-                        vis[neighbour] = 1;
-                    }
-            }
+            if (neighbour != parent)
+                if (dfsCheck(neighbour, vis, adj, node))
+                    return true;
         }
         return false;
     }
@@ -53,7 +42,7 @@ public:
         for (int i = 0; i < V; i++)
         {
             if (!vis[i])
-                if (bfsCheck(i, vis, adj, V))
+                if (dfsCheck(i, vis, adj, i))
                     return true;
         }
 
